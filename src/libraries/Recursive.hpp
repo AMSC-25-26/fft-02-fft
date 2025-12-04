@@ -1,5 +1,7 @@
 #include "Fourier.hpp"
 #include "../utilities/Timer.hpp"
+#include <complex>
+#include <cmath>
 
 using namespace std;
 
@@ -14,7 +16,10 @@ class Recursive : public Fourier<T> {
                 return x;
             }
 
-            const T w = exp(T((inverse ? 1 : -1) * 2.0 * M_PI) / T(N));
+            // Calculate w = exp(i * 2 * pi / N)
+            // Assuming T is std::complex<double>
+            double angle = (inverse ? 1 : -1) * 2.0 * M_PI / N;
+            const T w = std::polar(1.0, angle);
             T w_k = 1;
 
             vector<T> evenX, oddX;
@@ -49,7 +54,8 @@ class Recursive : public Fourier<T> {
             Timer t;
 
             // Algorithm
-            this->output = recursive(this->input);
+            vector<T> result = recursive(*(this->input));
+            this->output = new vector<T>(result);
             this->duration = t.stop_and_return();
         }
         
@@ -58,13 +64,13 @@ class Recursive : public Fourier<T> {
             Timer t;
 
             // Algorithm + Normalization
-            vector<T> Y = recursive(this->input);
+            vector<T> Y = recursive(*(this->input));
             int N = Y.size();
             for (T &it: Y) {
                 it /= N;
             }
 
-            this->output = Y;
+            this->output = new vector<T>(Y);
             this->duration = t.stop_and_return();
         }
 

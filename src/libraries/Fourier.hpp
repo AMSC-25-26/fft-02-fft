@@ -1,3 +1,6 @@
+#ifndef FOURIER_HPP
+#define FOURIER_HPP
+
 #include <vector>
 #include <string>
 #include <fstream>
@@ -16,7 +19,9 @@ class Fourier {
 
         virtual void compute() = 0;
         virtual void reverseCompute() = 0;
-        virtual void printStats();
+        virtual void printStats() {
+            cout << "Duration: " << duration << " microseconds" << endl;
+        }
 
         void read(const char* filename) {
             ifstream file(filename);
@@ -24,7 +29,7 @@ class Fourier {
                 throw runtime_error("Could not open file");
             }
 
-            int value;
+            T value;
             input = new vector<T>();
             while (file >> value) {
                 input->push_back(value);
@@ -48,3 +53,5 @@ class Fourier {
             file.close();
         }
 };
+
+#endif // FOURIER_HPP

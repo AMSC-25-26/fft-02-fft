@@ -15,7 +15,6 @@ public:
     }
 
     void stop_and_print(const std::string& message = "Duration") {
-        auto end_time = std::chrono::high_resolution_clock::now();
         auto duration = stop_and_return();
 
         std::cout << message << ": " << duration << " ms" << std::endl;

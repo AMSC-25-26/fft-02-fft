@@ -5,6 +5,7 @@
 #include "libraries/Fourier.hpp"
 #include "libraries/Iterative.hpp"
 #include "libraries/Recursive.hpp"
+#include "libraries/Parallel.hpp"
 
 int main(int argc, char* argv[]) {
     //Check on input arguments
@@ -29,21 +30,24 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    Fourier<double>* fft = nullptr;
+    Fourier<std::complex<double>>* fft = nullptr;
+    Fourier<std::complex<double>>* fft1 = nullptr;
+    Fourier<std::complex<double>>* fft2 = nullptr;
+    Fourier<std::complex<double>>* fft3 = nullptr;
     switch (method) {
         case 1:
-            fft = new Iterative<double>();
+            fft = new Iterative<std::complex<double>>();
             break;
         case 2:
-            fft = new Recursive<double>();
+            fft = new Recursive<std::complex<double>>();
             break;
         case 3:
-            fft = new Parallel<double>();
+            fft = new Parallel<std::complex<double>>();
             break;
         case 4:
-            fft1 = new Iterative<double>();
-            fft2 = new Recursive<double>();
-            fft3 = new Parallel<double>();
+            fft1 = new Iterative<std::complex<double>>();
+            fft2 = new Recursive<std::complex<double>>();
+            fft3 = new Parallel<std::complex<double>>();
             break;
     }
 
