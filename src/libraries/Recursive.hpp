@@ -6,32 +6,69 @@ using namespace std;
 template <typename T>
 class Recursive : public Fourier<T> {
     private:
-        vector<T> recursive(const vector<T> x) {
-            int N = x->size();
+        bool inverse = false;
+
+        vector<T> recursive(const vector<T> &x) {
+            int N = x.size();
+            if (N == 1) {
+                return x;
+            }
+
+            const T w = exp(T((inverse ? 1 : -1) * 2.0 * M_PI) / T(N));
+            T w_k = 1;
+
             vector<T> evenX, oddX;
             vector<T> evenY, oddY;
-
-            if (N <= 1) {
-                this->output[0] = x[0];
-                return;
-            }
+            vector<T> Y(N);
             
+            evenX.reserve(N / 2);
+            oddX.reserve(N / 2);
             for (int i = 0; i < N; i++) {
                 if (i % 2 == 0) {
-                    even.push_back(x[i]);
+                    evenX.push_back(x[i]);
                 } else {
-                    odd.push_back(x[i]);
+                    oddX.push_back(x[i]);
                 }
             }
+
+            evenY = recursive(evenX);
+            oddY = recursive(oddX);
+
+            for (int i = 0; i < (int) N / 2; i++) {
+                Y[i] = evenY[i] + w_k * oddY[i];
+                Y[i + N/2] = evenY[i] - w_k * oddY[i];
+                w_k *= w;
+            }
+
+            return Y;
         }
 
     public:
-        void compute() {
+        void compute() override {
+            inverse = false;
             Timer t;
-            recursive();
+
+            // Algorithm
+            this->output = recursive(this->input);
             this->duration = t.stop_and_return();
         }
         
-        void reverseCompute(const T* input, T* output) override;
-        void printStats() override;
+        void reverseCompute() override {
+            inverse = true;
+            Timer t;
+
+            // Algorithm + Normalization
+            vector<T> Y = recursive(this->input);
+            int N = Y.size();
+            for (T &it: Y) {
+                it /= N;
+            }
+
+            this->output = Y;
+            this->duration = t.stop_and_return();
+        }
+
+        void printStats() override {
+            cout << "Recursive FFT completed in " << this->duration << " ms" << endl;
+        }
 };
