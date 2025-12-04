@@ -14,8 +14,8 @@ class Fourier {
     public:
         Fourier() : input(nullptr), output(nullptr), duration(0) {}
 
-        virtual void compute(const T* input, T* output, size_t n) = 0;
-        virtual void reverseCompute(const T* input, T* output, size_t n) = 0;
+        virtual void compute() = 0;
+        virtual void reverseCompute() = 0;
         virtual void printStats();
 
         void read(const char* filename) {

@@ -46,5 +46,9 @@ int main(int argc, char* argv[]) {
             fft3 = new Parallel<double>();
             break;
     }
-    
+
+    fft->read(argv[2]);
+    fft->compute();
+    fft->printStats();
+    fft->write("output.txt");
 }
