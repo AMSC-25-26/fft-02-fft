@@ -2,23 +2,27 @@
 #include <vector>
 #include <cmath>
 #include <string>
+#include "libraries/Fourier.hpp"
+#include "libraries/Iterative.hpp"
+#include "libraries/Recursive.hpp"
 
 int main(int argc, char* argv[]) {
     //Check on input arguments
     // 1 -> Select compute method (Iterative / Recursive / Parallel / All)
     // 2 -> Input file name
     std::string methods[4] = {"Iterative", "Recursive", "Parallel", "All"};
-    if (argc == 2) {
-        int method = std::stoi(argv[0]);
-        std::string input_file = argv[1];
+    int method;
+    if (argc == 3) {
+        method = std::stoi(argv[1]);
+        std::string input_file = argv[2];
         if (method < 1 || method > 4){
             std::cerr << "Method must be between 1 and 4, use all" << std::endl;
             method = 4;
         }
 
         std::cerr << "Usage: " << methods[method-1] << " on file "<< input_file << std::endl;
-    } else if (argc == 1){
-        std::string input_file = argv[0];
+    } else if (argc == 2){
+        std::string input_file = argv[1];
         std::cerr << "Usage: All method on file " << input_file << std::endl;
     } else {
         std::cerr << "Usage: <method (1-4)> <input_file>" << std::endl;

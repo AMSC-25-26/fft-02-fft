@@ -7,8 +7,8 @@ using namespace std;
 template <typename T>
 class Fourier {
     protected:
-        vector<int> *input;
-        vector<int> *output;
+        vector<T> *input;
+        vector<T> *output;
         long long duration;
 
     public:
@@ -25,7 +25,7 @@ class Fourier {
             }
 
             int value;
-            input = new vector<int>();
+            input = new vector<T>();
             while (file >> value) {
                 input->push_back(value);
             }
