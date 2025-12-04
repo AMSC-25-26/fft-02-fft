@@ -19,5 +19,15 @@ Indice Decimale,Binario (Originale),Binario (Invertito),Indice Bit-Reversed
 
 #### Butterfly operations
 
+---
+
+___
 
 
+## Ricorsive
+
+-> Vittorio
+
+## OpenMP
+
+-> Bianca
