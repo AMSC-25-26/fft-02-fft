@@ -1,3 +1,6 @@
+#ifndef TIMER_HPP
+#define TIMER_HPP
+
 #include <iostream>
 #include <chrono>
 #include <thread>
@@ -21,5 +24,7 @@ public:
     }
 
 private:
-    std::chrono::high_resolution_clock::time_point start_time;
+    std::chrono::time_point<std::chrono::high_resolution_clock> start_time;
 };
+
+#endif // TIMER_HPP

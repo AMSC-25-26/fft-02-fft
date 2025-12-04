@@ -2,7 +2,7 @@
 #include <string>
 #include <cstdio>
 #include "exprtk.hpp"
-#define SIZE 1000
+#define SIZE 1024
 
 int main() {    
     // 1. Variable Declaration
@@ -42,7 +42,7 @@ int main() {
     std::cin >> domain_end;
 
     // 6. Generation (Generate SIZE values)
-    FILE* output_file = std::fopen("output.txt", "w");
+    FILE* output_file = std::fopen("../gen.txt", "w");
     for (int i = 0; i < SIZE; ++i) {
         x = domain_start + i * (domain_end - domain_start) / (SIZE - 1);
         double y = expression.value();

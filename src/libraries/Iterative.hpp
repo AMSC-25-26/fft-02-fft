@@ -2,23 +2,36 @@
 #define ITERATIVE_HPP
 
 #include "Fourier.hpp"
+#include "../utilities/Timer.hpp"
 #include <complex>
 #include <cmath>
+#include <stdexcept>
+#include <vector>
+#include <iostream>
 
 template <typename T>
 class Iterative : public Fourier<T> {
     public:
-        void compute() override{
-            // Implementation of iterative FFT computation
+        void compute() override {
+            size_t n = this->input->size();
+            if (n == 0) return;
+            if ((n & (n - 1)) != 0) {
+                throw std::invalid_argument("Input size must be a power of 2");
+            }
+
+            Timer t;
 
             // Bit reversal permutation on input array
-            size_t n = this->input->size();
             size_t log_n = 0;
             while ((size_t(1) << log_n) < n) log_n++;
 
             // Allocate output if not already allocated
             if (this->output == nullptr) {
                 this->output = new std::vector<T>(n);
+            } else {
+                if (this->output->size() != n) {
+                    this->output->resize(n);
+                }
             }
 
             for (size_t i = 0; i < n; ++i) {
@@ -46,19 +59,30 @@ class Iterative : public Fourier<T> {
                     }
                 }
             }
-
+            
+            this->duration = t.stop_and_return();
         }
+
         void reverseCompute() override {
-             // Implementation of iterative Inverse FFT computation
+            size_t n = this->input->size();
+            if (n == 0) return;
+            if ((n & (n - 1)) != 0) {
+                throw std::invalid_argument("Input size must be a power of 2");
+            }
+
+            Timer t;
 
             // Bit reversal permutation on input array
-            size_t n = this->input->size();
             size_t log_n = 0;
             while ((size_t(1) << log_n) < n) log_n++;
 
             // Allocate output if not already allocated
             if (this->output == nullptr) {
                 this->output = new std::vector<T>(n);
+            } else {
+                if (this->output->size() != n) {
+                    this->output->resize(n);
+                }
             }
 
             for (size_t i = 0; i < n; ++i) {
@@ -91,6 +115,8 @@ class Iterative : public Fourier<T> {
             for (size_t i = 0; i < n; ++i) {
                 (*(this->output))[i] /= static_cast<double>(n);
             }
+
+            this->duration = t.stop_and_return();
         }
 
         void printStats() override {

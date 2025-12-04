@@ -2,6 +2,8 @@
 #include "../utilities/Timer.hpp"
 #include <complex>
 #include <cmath>
+#include <vector>
+#include <stdexcept>
 
 using namespace std;
 

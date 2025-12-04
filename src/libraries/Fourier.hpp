@@ -17,6 +17,8 @@ class Fourier {
     public:
         Fourier() : input(nullptr), output(nullptr), duration(0) {}
 
+        virtual ~Fourier() {}
+
         virtual void compute() = 0;
         virtual void reverseCompute() = 0;
         virtual void printStats() {
@@ -35,6 +37,15 @@ class Fourier {
                 input->push_back(value);
             }
             file.close();
+
+            // Pad to next power of 2
+            size_t n = input->size();
+            if (n > 0 && (n & (n - 1)) != 0) {
+                size_t next_pow2 = 1;
+                while (next_pow2 < n) next_pow2 <<= 1;
+                input->resize(next_pow2, T(0));
+                cout << "Warning: Input size " << n << " is not a power of 2. Padded to " << next_pow2 << endl;
+            }
         }
 
         void write(const char* filename) {

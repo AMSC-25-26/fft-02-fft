@@ -31,9 +31,28 @@ int main(int argc, char* argv[]) {
     }
 
     Fourier<std::complex<double>>* fft = nullptr;
-    Fourier<std::complex<double>>* fft1 = nullptr;
-    Fourier<std::complex<double>>* fft2 = nullptr;
-    Fourier<std::complex<double>>* fft3 = nullptr;
+
+    if (method == 4) {
+        std::cout << "Running all methods..." << std::endl;
+        
+        Fourier<std::complex<double>>* runners[] = {
+            new Iterative<std::complex<double>>(),
+            new Recursive<std::complex<double>>(),
+            new Parallel<std::complex<double>>()
+        };
+        std::string names[] = {"Iterative", "Recursive", "Parallel"};
+
+        for(int i=0; i<3; ++i) {
+            std::cout << "\n--- " << names[i] << " ---" << std::endl;
+            runners[i]->read(argv[2]);
+            runners[i]->compute();
+            runners[i]->printStats();
+            runners[i]->write(("output_" + names[i] + ".txt").c_str());
+            delete runners[i];
+        }
+        return 0;
+    }
+
     switch (method) {
         case 1:
             fft = new Iterative<std::complex<double>>();
@@ -43,11 +62,6 @@ int main(int argc, char* argv[]) {
             break;
         case 3:
             fft = new Parallel<std::complex<double>>();
-            break;
-        case 4:
-            fft1 = new Iterative<std::complex<double>>();
-            fft2 = new Recursive<std::complex<double>>();
-            fft3 = new Parallel<std::complex<double>>();
             break;
     }
 
