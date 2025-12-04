@@ -2,6 +2,7 @@ template <typename T>
 class Fourier {
     private:
         // Input
+        vector<int> 
         // Output
         // Stats
     
