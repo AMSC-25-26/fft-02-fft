@@ -6,7 +6,7 @@ using namespace std;
 
 template <typename T>
 class Fourier {
-    private:
+    protected:
         vector<int> *input;
         vector<int> *output;
         long long duration;
@@ -14,8 +14,8 @@ class Fourier {
     public:
         Fourier() : input(nullptr), output(nullptr), duration(0) {}
 
-        virtual void compute(const T* input, T* output) = 0;
-        virtual void reverseCompute(const T* input, T* output) = 0;
+        virtual void compute(const T* input, T* output, size_t n) = 0;
+        virtual void reverseCompute(const T* input, T* output, size_t n) = 0;
         virtual void printStats();
 
         void read(const char* filename) {
