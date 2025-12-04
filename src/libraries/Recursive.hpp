@@ -1,7 +1,12 @@
+#include <chrono>
+
+using namespace std;
+
 template <typename T>
 class Recursive : public Fourier<T> {
     private:
         // Input
+        const long long duration;
         // Output
         // Stats
     

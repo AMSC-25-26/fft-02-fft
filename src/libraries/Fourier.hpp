@@ -1,14 +1,50 @@
+#include <vector>
+#include <string>
+#include <fstream>
+
+using namespace std;
+
 template <typename T>
 class Fourier {
     private:
-        // Input
-        vector<int> 
-        // Output
-        // Stats
-    
+        vector<int> *input;
+        vector<int> *output;
+        long long duration;
 
     public:
-        virtual void compute(const T* input, T* output);
-        virtual void reverseCompute(const T* input, T* output);
+        Fourier() : input(nullptr), output(nullptr), duration(0) {}
+
+        virtual void compute(const T* input, T* output) = 0;
+        virtual void reverseCompute(const T* input, T* output) = 0;
         virtual void printStats();
+
+        void read(const char* filename) {
+            ifstream file(filename);
+            if (!file.is_open()) {
+                throw runtime_error("Could not open file");
+            }
+
+            int value;
+            input = new vector<int>();
+            while (file >> value) {
+                input->push_back(value);
+            }
+            file.close();
+        }
+
+        void write(const char* filename) {
+            if (output == nullptr) {
+                throw runtime_error("Output data is empty");
+            }
+
+            ofstream file(filename);
+            if (!file.is_open()) {
+                throw runtime_error("Could not open file");
+            }
+
+            for (const auto& value : *output) {
+                file << value << endl;
+            }
+            file.close();
+        }
 };
