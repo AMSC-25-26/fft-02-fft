@@ -1,5 +1,10 @@
 # Procedimento
 
+
+- Classe top "Fourier" -> input, output, stats
+- Classe Iterative, Recursive figlie di Fuorier, override del metodo compute
+- Argv e Argc (vittorio)
+
 ## Iterative FFT
 
 #### Bit-reversal permutation

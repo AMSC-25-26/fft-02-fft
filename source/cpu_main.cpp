@@ -4,5 +4,5 @@
 #include <string>
 
 int main(){
-    
+    //TODO: inizialize MPI if not defined
 }
