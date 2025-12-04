@@ -1,5 +1,5 @@
 template <typename T>
-class Iterative : public Fourier<T> {
+class Recursive : public Fourier<T> {
     private:
         // Input
         // Output
@@ -8,9 +8,8 @@ class Iterative : public Fourier<T> {
 
     public:
         void compute(const T* input, T* output) override{
-            // Implementation of iterative FFT computation
+            // Implementation of recursive FFT computation
             
-
         }
         void reverseCompute(const T* input, T* output) override;
         void printStats() override;
