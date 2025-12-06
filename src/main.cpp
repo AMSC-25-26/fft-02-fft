@@ -8,14 +8,20 @@
 #include "libraries/Parallel.hpp"
 
 int main(int argc, char* argv[]) {
+    // Initialization of MPI
+    MPI_Init(&argc, &argv);
+    int rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
     //Check on input arguments
     // 1 -> Select compute method (Iterative / Recursive / Parallel / All)
     // 2 -> Input file name
     std::string methods[4] = {"Iterative", "Recursive", "Parallel", "All"};
+    std::string input_file;
     int method;
     if (argc == 3) {
         method = std::stoi(argv[1]);
-        std::string input_file = argv[2];
+        input_file = argv[2];
         if (method < 1 || method > 4){
             std::cerr << "Method must be between 1 and 4, use all" << std::endl;
             method = 4;
@@ -26,9 +32,12 @@ int main(int argc, char* argv[]) {
         std::string input_file = argv[1];
         std::cerr << "Usage: All method on file " << input_file << std::endl;
     } else {
-        std::cerr << "Usage: <method (1-4)> <input_file>" << std::endl;
+        if (rank == 0) std::cerr << "Usage: <method (1-4)> <input_file>" << std::endl; //just one process prints the message
+        MPI_Finalize(); // Finalize MPI also if we have an error
         return 1;
     }
+
+    if (rank == 0) std::cout << "Processing file: " << input_file << " with method " << method << std::endl; //just one process prints the message
 
     Fourier<std::complex<double>>* fft = nullptr;
     Fourier<std::complex<double>>* fft1 = nullptr;
@@ -55,4 +64,6 @@ int main(int argc, char* argv[]) {
     fft->compute();
     fft->printStats();
     fft->write("output.txt");
+
+    MPI_Finalize();
 }
