@@ -1,0 +1,58 @@
+# Build directories
+build/
+cmake-build-*/
+out/
+bin/
+obj/
+
+# Compiled object files
+*.o
+*.obj
+*.lo
+*.la
+*.a
+*.so
+*.so.*
+*.dylib
+*.dll
+
+# Executables
+a.out
+*.exe
+*.out
+*.app
+
+# CMake files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+INSTALL
+compile_commands.json
+
+# Xcode / macOS
+*.xcodeproj/
+*.xcworkspace/
+DerivedData/
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# VS Code
+.vscode/
+.history/
+
+# Backup / temp files
+*~
+*.swp
+*.swo
+*.tmp
+*.log
+*.bak
+
+# Python/other scripts cache
+__pycache__/
+*.py[cod]
+
+# ExprTk downloaded metadata (Zone.Identifier etc.)
+*Zone.Identifier
