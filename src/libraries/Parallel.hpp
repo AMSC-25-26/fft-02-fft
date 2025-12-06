@@ -6,6 +6,7 @@
 #define PARALLEL_HPP
 
 #include "Fourier.hpp"
+#include "../utilities/Timer.hpp"
 #include <mpi.h>
 #include <cmath>
 #include <vector>
@@ -56,15 +57,29 @@ class Parallel : public Fourier<T> {
     
 
     public:
-        // Constructor to initialize MPI details    
+        /**
+         * @brief Constructs a Parallel FFT object.
+         * 
+         * Initializes MPI rank and size based on the provided communicator.
+         * 
+         * @param communicator The MPI communicator to use (default: MPI_COMM_WORLD).
+         */
         Parallel(MPI_Comm communicator = MPI_COMM_WORLD) : comm(communicator) {
             MPI_Comm_rank(comm, &rank);
             MPI_Comm_size(comm, &size);
         }
         
+        /**
+         * @brief Computes the forward Fast Fourier Transform using MPI and OpenMP.
+         * 
+         * This method performs the FFT in parallel. It handles data distribution,
+         * bit-reversal permutation (on rank 0), and butterfly operations.
+         * For stages where the butterfly width exceeds local data size, data is gathered
+         * to rank 0, processed, and scattered back.
+         */
         void compute() override{
             // Implementation of parallel FFT computation
-            // Timer t; ???
+            Timer t;
 
             // Setup
             int global_n = 0;
@@ -155,12 +170,23 @@ class Parallel : public Fourier<T> {
                        rank == 0 ? this->output->data() : nullptr, local_n, MPI_DOUBLE_COMPLEX,
                        0, comm);
             }            
+            this->duration = t.stop_and_return();
         }
 
+        /**
+         * @brief Computes the inverse Fast Fourier Transform.
+         * 
+         * @note This method is currently not implemented for the Parallel version.
+         */
         void reverseCompute() override {
             // Implementation of parallel Inverse FFT computation
         }
 
+        /**
+         * @brief Prints the statistics of the Parallel FFT execution.
+         * 
+         * Outputs the method name and the duration of the last computation.
+         */
         void printStats() override {
             std::cout << "Parallel FFT ";
             Fourier<T>::printStats();

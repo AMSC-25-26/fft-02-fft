@@ -1,3 +1,8 @@
+/**
+ * @file Iterative.hpp
+ * @brief Header file for the Iterative FFT implementation.
+ */
+
 #ifndef ITERATIVE_HPP
 #define ITERATIVE_HPP
 
@@ -9,9 +14,22 @@
 #include <vector>
 #include <iostream>
 
+/**
+ * @class Iterative
+ * @brief Implements the Fast Fourier Transform using an iterative Cooley-Tukey algorithm.
+ * @tparam T The data type of the signal (usually std::complex<double>).
+ */
 template <typename T>
 class Iterative : public Fourier<T> {
     public:
+        /**
+         * @brief Computes the forward Fast Fourier Transform iteratively.
+         * 
+         * This method performs the FFT using an iterative approach with bit-reversal permutation
+         * and butterfly operations. It measures the execution time.
+         * 
+         * @throws std::invalid_argument If the input size is not a power of 2.
+         */
         void compute() override {
             size_t n = this->input->size();
             if (n == 0) return;
@@ -63,6 +81,15 @@ class Iterative : public Fourier<T> {
             this->duration = t.stop_and_return();
         }
 
+        /**
+         * @brief Computes the inverse Fast Fourier Transform iteratively.
+         * 
+         * This method performs the inverse FFT using an iterative approach. It includes
+         * bit-reversal permutation, butterfly operations with inverse angles, and normalization.
+         * It measures the execution time.
+         * 
+         * @throws std::invalid_argument If the input size is not a power of 2.
+         */
         void reverseCompute() override {
             size_t n = this->input->size();
             if (n == 0) return;
@@ -119,6 +146,11 @@ class Iterative : public Fourier<T> {
             this->duration = t.stop_and_return();
         }
 
+        /**
+         * @brief Prints the statistics of the Iterative FFT execution.
+         * 
+         * Outputs the method name and the duration of the last computation.
+         */
         void printStats() override {
             std::cout << "Iterative FFT ";
             Fourier<T>::printStats();

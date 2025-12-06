@@ -1,3 +1,8 @@
+/**
+ * @file Recursive.hpp
+ * @brief Header file for the Recursive FFT implementation.
+ */
+
 #include "Fourier.hpp"
 #include "../utilities/Timer.hpp"
 #include <complex>
@@ -7,11 +12,28 @@
 
 using namespace std;
 
+/**
+ * @class Recursive
+ * @brief Implements the Fast Fourier Transform using a recursive Cooley-Tukey algorithm.
+ * @tparam T The data type of the signal (usually std::complex<double>).
+ */
 template <typename T>
 class Recursive : public Fourier<T> {
     private:
+        /**
+         * @brief Flag to indicate if the inverse FFT is being computed.
+         */
         bool inverse = false;
 
+        /**
+         * @brief Recursively computes the FFT of the input vector.
+         * 
+         * This method implements the Cooley-Tukey algorithm by splitting the input
+         * into even and odd indexed elements and recursively solving sub-problems.
+         * 
+         * @param x The input vector for the current recursion level.
+         * @return vector<T> The transformed vector.
+         */
         vector<T> recursive(const vector<T> &x) {
             int N = x.size();
             if (N == 1) {
@@ -51,6 +73,11 @@ class Recursive : public Fourier<T> {
         }
 
     public:
+        /**
+         * @brief Computes the forward Fast Fourier Transform.
+         * 
+         * This method initializes the recursion and measures the execution time.
+         */
         void compute() override {
             inverse = false;
             Timer t;
@@ -61,6 +88,12 @@ class Recursive : public Fourier<T> {
             this->duration = t.stop_and_return();
         }
         
+        /**
+         * @brief Computes the inverse Fast Fourier Transform.
+         * 
+         * This method sets the inverse flag, performs the recursive computation,
+         * normalizes the result by dividing by N, and measures the execution time.
+         */
         void reverseCompute() override {
             inverse = true;
             Timer t;
@@ -76,7 +109,11 @@ class Recursive : public Fourier<T> {
             this->duration = t.stop_and_return();
         }
 
+        /**
+         * @brief Prints the statistics of the Recursive FFT execution.
+         */
         void printStats() override {
-            cout << "Recursive FFT completed in " << this->duration << " ms" << endl;
+            cout << "Recursive FFT ";
+            Fourier<T>::printStats();
         }
 };

@@ -1,3 +1,12 @@
+/**
+ * @file main.cpp
+ * @brief Main entry point for the FFT application.
+ *
+ * This file contains the main function which handles MPI initialization,
+ * command-line argument parsing, and the execution of different FFT implementations
+ * (Iterative, Recursive, Parallel) based on user input.
+ */
+
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -7,6 +16,18 @@
 #include "libraries/Recursive.hpp"
 #include "libraries/Parallel.hpp"
 
+/**
+ * @brief Main function to execute FFT algorithms.
+ * 
+ * Initializes MPI, parses command line arguments to select the FFT method
+ * and input file, and executes the chosen algorithm(s).
+ * 
+ * @param argc Number of command-line arguments.
+ * @param argv Array of command-line arguments.
+ *             argv[1]: Method selection (1: Iterative, 2: Recursive, 3: Parallel, 4: All).
+ *             argv[2]: Input file path.
+ * @return int Exit status (0 for success, 1 for error).
+ */
 int main(int argc, char* argv[]) {
     // Initialization of MPI
     MPI_Init(&argc, &argv);
