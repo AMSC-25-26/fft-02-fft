@@ -1,10 +1,11 @@
 /**
  * @file main.cpp
- * @brief Main entry point for the FFT application.
+ * @brief Main entry point for the FFT and IFFT application.
  *
  * This file contains the main function which handles MPI initialization,
  * command-line argument parsing, and the execution of different FFT implementations
- * (Iterative, Recursive, Parallel) based on user input.
+ * (Iterative, Recursive, Parallel) based on user input. 
+ * For each selected method, it performs both the forward FFT and the inverse FFT (IFFT).
  */
 
 #include <iostream>
@@ -16,18 +17,21 @@
 #include "libraries/Recursive.hpp"
 #include "libraries/Parallel.hpp"
 
-/**
- * @brief Main function to execute FFT algorithms.
+ /**
+ * @brief Main function to execute FFT and IFFT algorithms.
  * 
  * Initializes MPI, parses command line arguments to select the FFT method
- * and input file, and executes the chosen algorithm(s).
+ * and input file, and executes both forward (FFT) and inverse (IFFT)
+ * transforms for the chosen implementation(s).
  * 
  * @param argc Number of command-line arguments.
  * @param argv Array of command-line arguments.
- *             argv[1]: Method selection (1: Iterative, 2: Recursive, 3: Parallel, 4: All).
+ *             argv[1]: Method selection 
+ *                      (1: Iterative, 2: Recursive, 3: Parallel, 4: All methods).
  *             argv[2]: Input file path.
  * @return int Exit status (0 for success, 1 for error).
  */
+
 int main(int argc, char* argv[]) {
     // Initialization of MPI
     MPI_Init(&argc, &argv);
@@ -75,11 +79,19 @@ int main(int argc, char* argv[]) {
         for(int i=0; i<3; ++i) {
             std::cout << "\n--- " << names[i] << " ---" << std::endl;
             runners[i]->read(argv[2]);
-            runners[i]->compute();
-            runners[i]->printStats();
-            runners[i]->write(("output_" + names[i] + ".txt").c_str());
+            // Forward FFT
+        runners[i]->compute();
+        runners[i]->printStats();
+        runners[i]->write(("output_" + names[i] + ".txt").c_str());
+
+        // Inverse FFT
+        runners[i]->reverseCompute();
+        runners[i]->printStats();
+        runners[i]->write(("output_" + names[i] + "_IFFT.txt").c_str());
+        
             delete runners[i];
         }
+        
         return 0;
     }
 
@@ -99,6 +111,13 @@ int main(int argc, char* argv[]) {
     fft->compute();
     fft->printStats();
     fft->write("output.txt");
+    
+   
+    // Perform the inverse FFT (IFFT) for the selected method
+    fft->reverseCompute();
+    fft->printStats();
+    fft->write("output_IFFT.txt");
+  
 
     MPI_Finalize();
 }
