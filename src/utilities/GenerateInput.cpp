@@ -4,7 +4,7 @@
 #include "exprtk.hpp"
 #define SIZE 1024
 
-int main() {    
+int main() {
     // 1. Variable Declaration
     double x;
 
@@ -20,6 +20,7 @@ int main() {
 
     // 3. Input
     std::string function_string;
+    std::cout << "Insert a function of x: "; 
     std::getline(std::cin, function_string);
 
     // 4. Traslation and Compilation
@@ -41,8 +42,13 @@ int main() {
     std::cout << "Enter domain end: ";
     std::cin >> domain_end;
 
+    if (domain_end <= domain_start) { 
+    std::cout << "\nError: domain end must be greater than domain start.\n";
+    return 1;
+    }
+
     // 6. Generation (Generate SIZE values)
-    FILE* output_file = std::fopen("../gen.txt", "w");
+      FILE* output_file = std::fopen("../gen.txt", "w");
     for (int i = 0; i < SIZE; ++i) {
         x = domain_start + i * (domain_end - domain_start) / (SIZE - 1);
         double y = expression.value();
@@ -55,5 +61,6 @@ int main() {
     ...
     */
 
+    std::cout << "\nDomain input is valid. Generated samples saved to: ../gen.txt\n"; 
     return 0;
 }
