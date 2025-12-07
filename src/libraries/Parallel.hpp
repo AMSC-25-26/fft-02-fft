@@ -183,13 +183,11 @@ class Parallel : public Fourier<T> {
         }
 
         /**
-         * @brief Prints the statistics of the Parallel FFT execution.
-         * 
-         * Outputs the method name and the duration of the last computation.
+         * @brief Prints the statistics of the Parallel FFT/IFFT execution.
+         * @param label "FFT" or "IFFT"
          */
-        void printStats() override {
-            std::cout << "Parallel FFT ";
-            Fourier<T>::printStats();
+        void printStats(const std::string& label) override {
+        std::cout << "Parallel " << label << " Duration: " << this->duration << " ms" << std::endl;
         }
 };
 

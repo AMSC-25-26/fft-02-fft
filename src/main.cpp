@@ -82,7 +82,7 @@ int main(int argc, char* argv[]) {
             
             // Forward FFT
             runners[i]->compute();
-            runners[i]->printStats();
+            runners[i]->printStats("FFT");
             std::string out_name = "output_" + names[i] + ".txt";
             if (rank == 0) runners[i]->write(out_name.c_str());
             MPI_Barrier(MPI_COMM_WORLD);
@@ -91,7 +91,7 @@ int main(int argc, char* argv[]) {
             // Reload output as input
             runners[i]->read(out_name.c_str());
             runners[i]->reverseCompute();
-            runners[i]->printStats();
+            runners[i]->printStats("IFFT");
             if (rank == 0) runners[i]->writeReal(("output_" + names[i] + "_IFFT.txt").c_str());
         
             delete runners[i];
@@ -115,7 +115,7 @@ int main(int argc, char* argv[]) {
 
     fft->read(argv[2]);
     fft->compute();
-    fft->printStats();
+    fft->printStats("FFT");
     if (rank == 0) fft->write("output.txt");
     MPI_Barrier(MPI_COMM_WORLD);
     
@@ -124,7 +124,7 @@ int main(int argc, char* argv[]) {
    
     // Perform the inverse FFT (IFFT) for the selected method
     fft->reverseCompute();
-    fft->printStats();
+    fft->printStats("IFFT");
     if (rank == 0) fft->writeReal("output_IFFT.txt");
     MPI_Finalize();
 }

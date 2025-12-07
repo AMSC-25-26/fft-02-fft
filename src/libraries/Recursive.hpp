@@ -110,10 +110,10 @@ class Recursive : public Fourier<T> {
         }
 
         /**
-         * @brief Prints the statistics of the Recursive FFT execution.
+         * @brief Prints the statistics of the Recursive FFT/IFFT execution.
+         * @param label "FFT" or "IFFT"
          */
-        void printStats() override {
-            cout << "Recursive FFT ";
-            Fourier<T>::printStats();
-        }
+        void printStats(const std::string& label) override {
+        std::cout << "Recursive " << label << " Duration: " << this->duration << " ms" << std::endl;
+}
 };

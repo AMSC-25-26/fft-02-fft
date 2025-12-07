@@ -146,14 +146,12 @@ class Iterative : public Fourier<T> {
             this->duration = t.stop_and_return();
         }
 
-        /**
-         * @brief Prints the statistics of the Iterative FFT execution.
-         * 
-         * Outputs the method name and the duration of the last computation.
+         /**
+         * @brief Prints the statistics of the Iterative FFT/IFFT execution.
+         * @param label "FFT" or "IFFT"
          */
-        void printStats() override {
-            std::cout << "Iterative FFT ";
-            Fourier<T>::printStats();
+         void printStats(const std::string& label) override {
+         std::cout << "Iterative " << label << " Duration: " << this->duration << " ms" << std::endl;
         }
 };
 

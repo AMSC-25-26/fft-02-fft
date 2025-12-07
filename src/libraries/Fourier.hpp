@@ -76,6 +76,10 @@ class Fourier {
             cout << "Duration: " << duration << " ms" << endl;
         }
 
+        virtual void printStats(const std::string& label) {
+            cout << label << " Duration: " << duration << " ms" << endl;
+        }
+
         /**
          * @brief Reads input data from a file.
          * 
