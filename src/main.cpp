@@ -58,7 +58,7 @@ int main(int argc, char* argv[]) {
         std::cerr << "Usage: All method on file " << input_file << std::endl;
     } else {
         if (rank == 0) std::cerr << "Usage: <method (1-4)> <input_file>" << std::endl; //just one process prints the message
-        MPI_Finalize(); // Finalize MPI also if we have an error
+        MPI_Finalize();
         return 1;
     }
 
@@ -67,7 +67,7 @@ int main(int argc, char* argv[]) {
     Fourier<std::complex<double>>* fft = nullptr;
 
     if (method == 4) {
-        std::cout << "Running all methods..." << std::endl;
+        if (rank == 0) std::cout << "Running all methods..." << std::endl;
         
         Fourier<std::complex<double>>* runners[] = {
             new Iterative<std::complex<double>>(),
@@ -77,17 +77,22 @@ int main(int argc, char* argv[]) {
         std::string names[] = {"Iterative", "Recursive", "Parallel"};
 
         for(int i=0; i<3; ++i) {
-            std::cout << "\n--- " << names[i] << " ---" << std::endl;
+            if (rank == 0) std::cout << "\n--- " << names[i] << " ---" << std::endl;
             runners[i]->read(argv[2]);
+            
             // Forward FFT
-        runners[i]->compute();
-        runners[i]->printStats();
-        runners[i]->write(("output_" + names[i] + ".txt").c_str());
+            runners[i]->compute();
+            runners[i]->printStats();
+            std::string out_name = "output_" + names[i] + ".txt";
+            if (rank == 0) runners[i]->write(out_name.c_str());
+            MPI_Barrier(MPI_COMM_WORLD);
 
-        // Inverse FFT
-        runners[i]->reverseCompute();
-        runners[i]->printStats();
-        runners[i]->write(("output_" + names[i] + "_IFFT.txt").c_str());
+            // Inverse FFT
+            // Reload output as input
+            runners[i]->read(out_name.c_str());
+            runners[i]->reverseCompute();
+            runners[i]->printStats();
+            if (rank == 0) runners[i]->writeReal(("output_" + names[i] + "_IFFT.txt").c_str());
         
             delete runners[i];
         }
@@ -111,14 +116,15 @@ int main(int argc, char* argv[]) {
     fft->read(argv[2]);
     fft->compute();
     fft->printStats();
-    fft->write("output.txt");
+    if (rank == 0) fft->write("output.txt");
+    MPI_Barrier(MPI_COMM_WORLD);
     
+    // Reload output as input
+    fft->read("output.txt");
    
     // Perform the inverse FFT (IFFT) for the selected method
     fft->reverseCompute();
     fft->printStats();
-    fft->write("output_IFFT.txt");
-  
-
+    if (rank == 0) fft->writeReal("output_IFFT.txt");
     MPI_Finalize();
 }

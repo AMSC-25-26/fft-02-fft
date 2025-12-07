@@ -9,6 +9,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <iomanip>
 
 using namespace std;
 
@@ -126,8 +127,35 @@ class Fourier {
                 throw runtime_error("Could not open file");
             }
 
+            file << fixed << setprecision(6);
             for (const auto& value : *output) {
                 file << value << endl;
+            }
+            file.close();
+        }
+
+        /**
+         * @brief Writes the real part of the output data to a file.
+         * 
+         * Writes only the real component of the computed results to the specified file.
+         * Useful for IFFT output when the original signal was real.
+         * 
+         * @param filename The path to the output file.
+         * @throws std::runtime_error If the output data is empty or the file cannot be opened.
+         */
+        void writeReal(const char* filename) {
+            if (output == nullptr) {
+                throw runtime_error("Output data is empty");
+            }
+
+            ofstream file(filename);
+            if (!file.is_open()) {
+                throw runtime_error("Could not open file");
+            }
+
+            file << fixed << setprecision(6);
+            for (const auto& value : *output) {
+                file << value.real() << endl;
             }
             file.close();
         }
