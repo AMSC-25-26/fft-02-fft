@@ -1,2 +1,109 @@
-# FFT
-Fast fourier transform
+# Fast Fourier Transform (FFT) Implementations in C++
+
+This project provides implementations of the Fast Fourier Transform (FFT) in C++, including **iterative, recursive, and parallel MPI versions**. It allows you to process input data from text files and measure execution time. Results can be visualized using a Python plotting script.
+
+---
+
+## Build Instructions
+
+Compile the project using `mpic++`:
+
+```sh
+mpic++ -std=c++17 -Wall -Wextra -Wno-cast-function-type -I. main.cpp -o main
+````
+
+**Notes:**
+
+* You may see warnings like:
+
+  ```
+  libraries/Parallel.hpp:40: warning: ignoring '#pragma omp parallel' [-Wunknown-pragmas]
+  ```
+
+  This is normal if OpenMP is not fully supported by your compiler.
+* The output executable will be named `main`.
+
+---
+
+## Run Instructions
+
+After building, run the executable with:
+
+```sh
+./main <method> <input_file>
+```
+
+### Command-line Arguments
+
+1. `<method>` — FFT method selection:
+
+   * `1` : Iterative FFT
+   * `2` : Recursive FFT
+   * `3` : Parallel MPI FFT
+   * `4` : Run all methods for comparison
+
+2. `<input_file>` — Path to a text file containing the input data.
+---
+
+## Plotting Results
+
+The results of the FFT executions are saved to `output.txt`. You can visualize the timing results using the Python script:
+
+```sh
+python3 plot_results.py output.txt
+```
+
+---
+
+## Directory Structure
+
+## Directory Structure
+
+* `src/` — Source files, including:
+    * `main.cpp` — Main executable.
+    * `libraries/` — Header and implementation files for different FFT methods.
+    * `utilities/` — C++ files for generating input data.
+    * `plot_results.py` — Python script for visualizing results.
+* `Documents/` — Project documentation.
+
+---
+
+## Requirements
+
+* C++17 compatible compiler (e.g., `g++` or `mpic++`)
+* MPI library (e.g., OpenMPI)
+* Python 3.x (for plotting)
+* Matplotlib (Python package)
+* OpenMP (optional, for parallel FFT)
+
+Install dependencies on Ubuntu:
+
+```sh
+sudo apt-get install build-essential libopenmpi-dev python3 python3-pip
+```
+
+---
+
+## Example Workflow
+
+**1. Compile:**
+
+```sh
+mpic++ -std=c++17 -Wall -Wextra -Wno-cast-function-type -I. main.cpp -o main
+```
+
+**2. Run FFT:**
+
+```sh
+./main 1 gen.txt
+```
+
+**3. Plot results:**
+
+```sh
+python3 plot_results.py output.txt
+```
+
+---
+
+For more details, see the source code in the `src/` and `libraries/` directories.
