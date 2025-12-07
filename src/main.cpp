@@ -18,7 +18,7 @@
 #include "libraries/Parallel.hpp"
 
  /**
- * @brief Main function to execute FFT and IFFT algorithms.
+ * @brief Main function to execute FFT and cd ..algorithms.
  * 
  * Initializes MPI, parses command line arguments to select the FFT method
  * and input file, and executes both forward (FFT) and inverse (IFFT)
@@ -92,6 +92,7 @@ int main(int argc, char* argv[]) {
             delete runners[i];
         }
         
+        MPI_Finalize();
         return 0;
     }
 
