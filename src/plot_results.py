@@ -47,10 +47,11 @@ def main():
     plt.ylabel('Magnitude')
     plt.grid(True)
     plt.legend()
-    output_image = 'fft_plot.png'
+    base_name = os.path.splitext(os.path.basename(filename))[0]
+    output_image = f"{base_name}_plot.png"
     plt.savefig(output_image)
     print(f"Plot saved to {output_image}")
-    print("To view the plot, open fft_plot.png")
+    print(f"To view the plot, open {output_image}")
 
 if __name__ == '__main__':
     main()
