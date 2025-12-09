@@ -1,7 +1,6 @@
 # Fast Fourier Transform (FFT) Implementations in C++
 
-This project provides implementations of the Fast Fourier Transform (FFT) in C++, including **iterative, recursive, and parallel MPI versions**. It allows you to process input data from text files and measure execution time. Results can be visualized using a Python plotting script.
-
+This project provides implementations of the Fast Fourier Transform (FFT) in C++, including **iterative, recursive, and parallel MPI versions**. It allows you to process input data from text files, compute both FFT and inverse FFT (IFFT), and measure execution time. Results can be visualized using a Python plotting script.
 ---
 
 ## Build Instructions
@@ -44,6 +43,18 @@ After building, run the executable with:
 
 2. `<input_file>` — Path to a text file containing the input data.
 ---
+## Output
+
+The program computes both the forward FFT and the inverse FFT (IFFT). For each method, the following output files are generated:
+
+* **Forward FFT results:** `output_<method>.txt`
+* **Inverse FFT (IFFT) results:** `output_<method>_IFFT.txt`
+
+**Example:** Running the Iterative method will generate:
+
+* `output_Iterative.txt` — Forward FFT results
+* `output_Iterative_IFFT.txt` — Inverse FFT results
+
 
 ## Plotting Results
 
@@ -54,8 +65,6 @@ python3 plot_results.py output.txt
 ```
 
 ---
-
-## Directory Structure
 
 ## Directory Structure
 
