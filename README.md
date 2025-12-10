@@ -42,7 +42,60 @@ After building, run the executable with:
    * `4` : Run all methods for comparison
 
 2. `<input_file>` — Path to a text file containing the input data.
+
 ---
+
+## Generating Input Data
+
+Before running the FFT program, you need to generate a text file containing the input samples. Use the provided `GenerateInput.cpp` in the `utilities/` folder.
+
+### Steps:
+
+1. Go to the `utilities/` folder:
+
+```sh
+cd src/utilities/
+```
+
+2. Compile the input generator:
+
+```sh
+g++ GenerateInput.cpp -o gen
+```
+
+3. Run the generator:
+
+```sh
+./gen
+```
+
+4. Follow the prompts:
+
+* **Insert a function of x:**  
+  Example: `sin(2*pi*x)` or `cos(pi*0.25*x)`
+
+* **Enter domain start:**  
+  Example: `-2`
+
+* **Enter domain end:**  
+  Example: `2`
+
+The generator will validate the domain and save the samples to:
+
+```sh
+../gen.txt
+```
+
+This file (`gen.txt`) can now be used as the `<input_file>` argument when running `main`.
+
+**Example usage:**
+
+```sh
+cd ../../   # go back to project root
+./main 1 gen.txt
+```
+---
+
 ## Output
 
 The program computes both the forward FFT and the inverse FFT (IFFT). For each method, the following output files are generated:
