@@ -2,6 +2,8 @@
  * @file Recursive.hpp
  * @brief Header file for the Recursive FFT implementation.
  */
+#ifndef RECURSIVE_HPP
+#define RECURSIVE_HPP
 
 #include "Fourier.hpp"
 #include "../utilities/Timer.hpp"
@@ -114,6 +116,8 @@ class Recursive : public Fourier<T> {
          * @param label "FFT" or "IFFT"
          */
         void printStats(const std::string& label) override {
-        std::cout << "Recursive " << label << " Duration: " << this->duration << " ms" << std::endl;
-}
+            cout << "Recursive " << label << " Duration: " << this->duration << " ms" << endl;
+        }
 };
+
+#endif
