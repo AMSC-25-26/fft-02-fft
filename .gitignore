@@ -56,3 +56,5 @@ __pycache__/
 
 # ExprTk downloaded metadata (Zone.Identifier etc.)
 *Zone.Identifier
+
+.github/
