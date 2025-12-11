@@ -90,14 +90,23 @@ class Fourier {
          * @param filename The path to the input file.
          * @throws std::runtime_error If the file cannot be opened.
          */
-        void read(const char* filename) {
+        bool read(const char* filename) {
             ifstream file(filename);
             if (!file.is_open()) {
                 throw runtime_error("Could not open file");
             }
 
-            T value;
             input = new vector<T>();
+            T value;
+            bool isReal = true;
+
+            // Check for complex format (starts with '(')
+            // Skip leading whitespace
+            file >> ws;
+            if (file.peek() == '(') {
+                isReal = false;
+            }
+
             while (file >> value) {
                 input->push_back(value);
             }
@@ -111,6 +120,7 @@ class Fourier {
                 input->resize(next_pow2, T(0));
                 cout << "Warning: Input size " << n << " is not a power of 2. Padded to " << next_pow2 << endl;
             }
+            return isReal;
         }
 
         /**
