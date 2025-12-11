@@ -66,41 +66,6 @@ int main(int argc, char* argv[]) {
 
     Fourier<std::complex<double>>* fft = nullptr;
 
-    if (method == 4) {
-        if (rank == 0) std::cout << "Running all methods..." << std::endl;
-        
-        Fourier<std::complex<double>>* runners[] = {
-            new Iterative<std::complex<double>>(),
-            new Recursive<std::complex<double>>(),
-            new Parallel<std::complex<double>>()
-        };
-        std::string names[] = {"Iterative", "Recursive", "Parallel"};
-
-        for(int i=0; i<3; ++i) {
-            if (rank == 0) std::cout << "\n--- " << names[i] << " ---" << std::endl;
-            runners[i]->read(argv[2]);
-            
-            // Forward FFT
-            runners[i]->compute();
-            runners[i]->printStats("FFT");
-            std::string out_name = "output_" + names[i] + ".txt";
-            if (rank == 0) runners[i]->write(out_name.c_str());
-            MPI_Barrier(MPI_COMM_WORLD);
-
-            // Inverse FFT
-            // Reload output as input
-            runners[i]->read(out_name.c_str());
-            runners[i]->reverseCompute();
-            runners[i]->printStats("IFFT");
-            if (rank == 0) runners[i]->writeReal(("output_" + names[i] + "_IFFT.txt").c_str());
-        
-            delete runners[i];
-        }
-        
-        MPI_Finalize();
-        return 0;
-    }
-
     switch (method) {
         case 1:
             fft = new Iterative<std::complex<double>>();
@@ -111,16 +76,52 @@ int main(int argc, char* argv[]) {
         case 3:
             fft = new Parallel<std::complex<double>>();
             break;
+        case 4:
+            if (rank == 0) std::cout << "Running all methods..." << std::endl;
+        
+            Fourier<std::complex<double>>* runners[] = {
+                new Iterative<std::complex<double>>(),
+                new Recursive<std::complex<double>>(),
+                new Parallel<std::complex<double>>()
+            };
+            std::string names[] = {"Iterative", "Recursive", "Parallel"};
+
+            for(int i=0; i<3; ++i) {
+                if (rank == 0) std::cout << "\n--- " << names[i] << " ---" << std::endl;
+
+                // if read return false, only reverseCompute
+                if (runners[i]->read(argv[2])) {
+                    // Forward FFT
+                    runners[i]->compute();
+                    runners[i]->printStats("FFT");
+                    std::string out_name = "output_" + names[i] + ".txt";
+                    if (rank == 0) runners[i]->write(out_name.c_str());
+                    MPI_Barrier(MPI_COMM_WORLD);
+                    runners[i]->read(out_name.c_str());
+                }
+
+                // Inverse FFT
+                // Reload output as input
+                runners[i]->reverseCompute();
+                runners[i]->printStats("IFFT");
+                if (rank == 0) runners[i]->writeReal(("output_" + names[i] + "_IFFT.txt").c_str());
+            
+                delete runners[i];
+            }
+            
+            MPI_Finalize();
+            return 0;
+            break;
     }
 
-    fft->read(argv[2]);
-    fft->compute();
-    fft->printStats("FFT");
-    if (rank == 0) fft->write("output.txt");
-    MPI_Barrier(MPI_COMM_WORLD);
-    
-    // Reload output as input
-    fft->read("output.txt");
+    if(fft->read(argv[2])){
+        fft->compute();
+        fft->printStats("FFT");
+        if (rank == 0) fft->write("output.txt");
+        MPI_Barrier(MPI_COMM_WORLD);
+        // Reload output as input
+        fft->read("output.txt");
+    }
    
     // Perform the inverse FFT (IFFT) for the selected method
     fft->reverseCompute();

@@ -21,6 +21,9 @@ a.out
 *.exe
 *.out
 *.app
+*.txt
+src/*.txt
+main
 
 # CMake files
 CMakeFiles/

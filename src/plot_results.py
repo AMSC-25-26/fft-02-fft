@@ -20,8 +20,12 @@ def main():
 
     plt.figure(figsize=(10, 6))
     
+    # Define styles to distinguish overlapping plots
+    linestyles = ['-', '--', ':', '-.']
+    linewidths = [2.5, 2.0, 1.5]
+    
     files_plotted = False
-    for filename in filenames:
+    for i, filename in enumerate(filenames):
         if not os.path.exists(filename):
             print(f"Error: File {filename} not found.")
             continue
@@ -36,7 +40,10 @@ def main():
                     data.append(abs(c))
         
         if data:
-            plt.plot(data, label=filename)
+            # Cycle through styles if more than defined
+            ls = linestyles[i % len(linestyles)]
+            lw = linewidths[i % len(linewidths)]
+            plt.plot(data, label=filename, linestyle=ls, linewidth=lw, alpha=0.8)
             files_plotted = True
 
     if not files_plotted:
