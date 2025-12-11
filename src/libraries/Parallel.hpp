@@ -39,20 +39,36 @@ class Parallel : public Fourier<T> {
             double angle = (inverse ? 2.0 : -2.0) * std::acos(-1.0) / len;
             std::complex<double> wlen(std::cos(angle), std::sin(angle));
 
-            #pragma omp parallel for schedule(static)
-            for (size_t i = 0; i < local_n; i += len) {
-                std::complex<double> w(1.0, 0.0);
+            // Heuristic: if the number of outer iterations is large enough, use the efficient recurrence.
+            // Otherwise (large len), use collapse(2) with direct calculation to maximize parallelism.
+            if (local_n / len >= 32) {
+                #pragma omp parallel for schedule(static)
+                for (size_t i = 0; i < local_n; i += len) {
+                    std::complex<double> w(1.0, 0.0);
+                    for (size_t j = 0; j < len / 2; j++) {
+                        std::complex<double> u = data[i + j];
+                        std::complex<double> v = data[i + j + len / 2] * w;
 
-                for (size_t j = 0; j < len / 2; j++) {
-                    std::complex<double> u = data[i + j];
-                    std::complex<double> v = data[i + j + len / 2] * w;
+                        // butterfly operation
+                        data[i + j] = u + v;
+                        data[i + j + len / 2] = u - v;
 
-                    // butterfly operation
-                    data[i + j] = u + v;
-                    data[i + j + len / 2] = u - v;
+                        // update w
+                        w *= wlen;
+                    }
+                }
+            } else {
+                #pragma omp parallel for collapse(2) schedule(static)
+                for (size_t i = 0; i < local_n; i += len) {
+                    for (size_t j = 0; j < len / 2; j++) {
+                        std::complex<double> w = std::polar(1.0, angle * j);
+                        std::complex<double> u = data[i + j];
+                        std::complex<double> v = data[i + j + len / 2] * w;
 
-                    // update w
-                    w *= wlen;
+                        // butterfly operation
+                        data[i + j] = u + v;
+                        data[i + j + len / 2] = u - v;
+                    }
                 }
             }
         }
@@ -137,23 +153,53 @@ class Parallel : public Fourier<T> {
                 }
 
                 // CASE 2: The butterfly spans multiple processes, distributed calculation
-                else {
-                    std::vector<T> full_data;
-                    if (rank == 0) full_data.resize(global_n);
-
-                    // Gather all current local work to Rank 0
-                    MPI_Gather(local_data.data(), local_n, MPI_DOUBLE_COMPLEX,
-                            rank == 0 ? full_data.data() : nullptr, local_n, MPI_DOUBLE_COMPLEX, 0, comm);
+                else {                    
+                    size_t half_len = len / 2;
+                    // Calculate how many processes are in one "half" of the butterfly
+                    // Since len > local_n, the butterfly stride spans across processes.
+                    int group_size = static_cast<int>(half_len / local_n); 
                     
-                    // Rank 0 performs the butterfly operation on the full data
-                    if (rank == 0) {
-                        butterfly_stage(full_data, global_n, len, inverse); // ?? global_n is int and len is size_t
-                        // Pass the inverse flag to handle both FFT and IFFT
-                    }
+                    // Find partner process using XOR (hypercube topology)
+                    int partner = rank ^ group_size;
 
-                    // Scatter back to processes
-                    MPI_Scatter(rank == 0 ? full_data.data() : nullptr, local_n, MPI_DOUBLE_COMPLEX,
-                                local_data.data(), local_n, MPI_DOUBLE_COMPLEX, 0, comm);
+                    std::vector<T> buffer(local_n);
+
+                    // Exchange data with partner
+                    MPI_Status status;
+                    MPI_Sendrecv(local_data.data(), local_n, MPI_DOUBLE_COMPLEX, partner, 0,
+                                 buffer.data(), local_n, MPI_DOUBLE_COMPLEX, partner, 0,
+                                 comm, &status);
+
+                    // Determine if I am the "lower" (u) or "upper" (v) part of the butterfly
+                    // If the bit corresponding to group_size is 0, I am lower.
+                    bool is_lower = (rank & group_size) == 0;
+
+                    // Calculate angle parameters
+                    double angle = (inverse ? 2.0 : -2.0) * std::acos(-1.0) / len;
+                    
+                    // Calculate the global index offset for w calculation
+                    // The 'j' index in the butterfly runs 0..half_len-1
+                    // My segment of 'j' starts at (rank % group_size) * local_n
+                    size_t start_j = (rank % group_size) * local_n;
+
+                    #pragma omp parallel for schedule(static)
+                    for (size_t i = 0; i < static_cast<size_t>(local_n); ++i) {
+                        // Calculate w for this specific index
+                        std::complex<double> w = std::polar(1.0, angle * static_cast<double>(start_j + i));
+                        
+                        std::complex<double> u, v;
+                        if (is_lower) {
+                            // I have u, received v
+                            u = local_data[i];
+                            v = buffer[i];
+                            local_data[i] = u + v * w;
+                        } else {
+                            // I have v, received u
+                            u = buffer[i];
+                            v = local_data[i];
+                            local_data[i] = u - v * w;
+                        }
+                    }
                 }
             }
 
