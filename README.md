@@ -110,10 +110,10 @@ The program computes both the forward FFT and the inverse FFT (IFFT). For each m
 
 ## Plotting Results
 
-The results of the FFT executions are saved to `output.txt`. You can visualize the timing results using the Python script:
+Suppose the results of the FFT Iterative executions are saved to `output_Iterative.txt`. You can visualize the timing results using the Python script:
 
 ```sh
-python3 plot_results.py output.txt
+python3 plot_results.py output_Iterative.txt
 ```
 
 ---
@@ -162,7 +162,7 @@ mpic++ -std=c++17 -Wall -Wextra -Wno-cast-function-type -I. main.cpp -o main
 **3. Plot results:**
 
 ```sh
-python3 plot_results.py output.txt
+python3 plot_results.py output_Iterative.txt
 ```
 
 ---
