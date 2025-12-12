@@ -99,7 +99,7 @@ class Parallel : public Fourier<T> {
 
             // Compute log_n
             size_t log_n = 0;
-            while ((size_t(1) << log_n) < static_cast<size_t>(global_n)) log_n++; // ?? casting global_n to size_t
+            while ((size_t(1) << log_n) < static_cast<size_t>(global_n)) log_n++; // casting global_n to size_t
 
             // Bit reversal permutation
             std::vector<T> permuted_input;
@@ -109,7 +109,7 @@ class Parallel : public Fourier<T> {
 
                 // "schedule(static)" because the work per iteration is identical
                 #pragma omp parallel for schedule(static)
-                for (size_t i = 0; i < static_cast<size_t>(global_n); ++i) { //?? casting gloabl_n to use size_t
+                for (size_t i = 0; i < static_cast<size_t>(global_n); ++i) { // casting gloabl_n to use size_t
                     size_t j = 0; // variable to save the reversed index
                     size_t temp_i = i;
 
@@ -148,7 +148,7 @@ class Parallel : public Fourier<T> {
                 
                 // CASE 1: The butterfly fits entirely inside local memory
                 if (len <= local_n) {
-                    butterfly_stage(local_data, local_n, len, inverse); // ?? local_n is int and len is size_t
+                    butterfly_stage(local_data, local_n, len, inverse); // casting: local_n is int and len is size_t
                     // Pass the inverse flag to handle both FFT and IFFT
                 }
 
