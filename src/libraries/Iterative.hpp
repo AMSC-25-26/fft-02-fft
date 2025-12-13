@@ -45,7 +45,7 @@ class Iterative : public Fourier<T> {
 
             // Allocate output if not already allocated
             if (this->output == nullptr) {
-                this->output = new std::vector<T>(n);
+                this->output = make_unique<vector<T>>(n);
             } else {
                 if (this->output->size() != n) {
                     this->output->resize(n);
@@ -105,7 +105,7 @@ class Iterative : public Fourier<T> {
 
             // Allocate output if not already allocated
             if (this->output == nullptr) {
-                this->output = new std::vector<T>(n);
+                this->output = make_unique<vector<T>>(n);
             } else {
                 if (this->output->size() != n) {
                     this->output->resize(n);

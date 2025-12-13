@@ -10,6 +10,7 @@
 #include <string>
 #include <fstream>
 #include <iomanip>
+#include <memory>
 
 using namespace std;
 
@@ -28,12 +29,12 @@ class Fourier {
         /**
          * @brief Pointer to the input data vector.
          */
-        vector<T> *input;
+        unique_ptr<vector<T>> input;
 
         /**
          * @brief Pointer to the output data vector.
          */
-        vector<T> *output;
+        unique_ptr<vector<T>> output;
 
         /**
          * @brief Duration of the last computation in milliseconds.
@@ -96,7 +97,7 @@ class Fourier {
                 throw runtime_error("Could not open file");
             }
 
-            input = new vector<T>();
+            input = make_unique<vector<T>>();
             T value;
             bool isReal = true;
 

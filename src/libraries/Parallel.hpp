@@ -125,7 +125,7 @@ class Parallel : public Fourier<T> {
 
                 // Prepare Output: resize output on rank 0 to hold final result later
                 if (this->output == nullptr) {
-                    this->output = new std::vector<T>(global_n);
+                    this->output = make_unique<vector<T>>(global_n);
                 } else {
                     this->output->resize(global_n);
                 }

@@ -86,7 +86,7 @@ class Recursive : public Fourier<T> {
 
             // Algorithm
             vector<T> result = recursive(*(this->input));
-            this->output = new vector<T>(result);
+            this->output = make_unique<vector<T>>(result);
             this->duration = t.stop_and_return();
         }
         
@@ -107,7 +107,7 @@ class Recursive : public Fourier<T> {
                 it /= N;
             }
 
-            this->output = new vector<T>(Y);
+            this->output = make_unique<vector<T>>(Y);
             this->duration = t.stop_and_return();
         }
 
