@@ -111,21 +111,22 @@ $(DEPEND): $(MAIN_SRCS) $(GEN_SRCS)
 
 generate: gen
 	cd $(UTIL_DIR) && ../../gen
+	find .. -name gen.txt -ls
 	@if [ -f gen.txt ]; then \
 		echo "Generated gen.txt in project root"; \
 	fi
 
 run-iterative: $(MAIN)
-	./$(MAIN) 1 gen.txt
+	./$(MAIN) 1 src/gen.txt
 
 run-recursive: $(MAIN)
-	./$(MAIN) 2 gen.txt
+	./$(MAIN) 2 src/gen.txt
 
 run-parallel: $(MAIN)
-	./$(MAIN) 3 gen.txt
+	./$(MAIN) 3 src/gen.txt
 
 run-all: $(MAIN)
-	./$(MAIN) 4 gen.txt
+	./$(MAIN) 4 src/gen.txt
 
 # ============================================================
 # Plotting
