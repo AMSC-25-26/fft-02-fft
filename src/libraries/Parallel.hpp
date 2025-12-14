@@ -135,11 +135,11 @@ class Parallel : public Fourier<T> {
             int local_n = global_n / size;// Local partition size (Note: MPI counts must be int)
             std::vector<T> local_data(local_n);// Each process gets a chunk of size local_n
 
-            // Mapping T from std::complex<double> to MPI_DOUBLE_COMPLEX
+            // Mapping T from std::complex<double> to MPI_C_DOUBLE_COMPLEX
             MPI_Scatter(rank == 0 ? permuted_input.data() : nullptr, 
-                        local_n, MPI_DOUBLE_COMPLEX,
+                        local_n, MPI_C_DOUBLE_COMPLEX,
                         local_data.data(), 
-                        local_n, MPI_DOUBLE_COMPLEX, 
+                        local_n, MPI_C_DOUBLE_COMPLEX, 
                         0, comm);
 
             // Butterfly operations Stages
@@ -166,8 +166,8 @@ class Parallel : public Fourier<T> {
 
                     // Exchange data with partner
                     MPI_Status status;
-                    MPI_Sendrecv(local_data.data(), local_n, MPI_DOUBLE_COMPLEX, partner, 0,
-                                 buffer.data(), local_n, MPI_DOUBLE_COMPLEX, partner, 0,
+                    MPI_Sendrecv(local_data.data(), local_n, MPI_C_DOUBLE_COMPLEX, partner, 0,
+                                 buffer.data(), local_n, MPI_C_DOUBLE_COMPLEX, partner, 0,
                                  comm, &status);
 
                     // Determine if I am the "lower" (u) or "upper" (v) part of the butterfly
@@ -204,8 +204,8 @@ class Parallel : public Fourier<T> {
             }
 
             //Final Gather
-            MPI_Gather(local_data.data(), local_n, MPI_DOUBLE_COMPLEX,
-                    rank == 0 ? this->output->data() : nullptr, local_n, MPI_DOUBLE_COMPLEX, 0, comm);
+            MPI_Gather(local_data.data(), local_n, MPI_C_DOUBLE_COMPLEX,
+                    rank == 0 ? this->output->data() : nullptr, local_n, MPI_C_DOUBLE_COMPLEX, 0, comm);
 
             // Normalization (is needed for the inverse only!)
             if (inverse && rank == 0) {

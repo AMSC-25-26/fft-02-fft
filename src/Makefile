@@ -15,7 +15,7 @@ PYTHON   ?= python3
 # Compilation flags
 # -----------------------------
 CXXFLAGS ?= -std=c++17 -Wall -Wextra -O3
-CPPFLAGS ?= -I./src
+CPPFLAGS ?= -I.
 
 # Detect OS to handle OpenMP support
 UNAME_S := $(shell uname -s)
@@ -39,8 +39,8 @@ LDLIBS   ?= $(OMP_LIBS)
 # -----------------------------
 # Directories
 # -----------------------------
-SRC_DIR  = src
-UTIL_DIR = $(SRC_DIR)/utilities
+SRC_DIR  = .
+UTIL_DIR = utilities
 
 # -----------------------------
 # Dependency file
@@ -56,13 +56,13 @@ GEN  = gen
 # -----------------------------
 # Source files
 # -----------------------------
-MAIN_SRCS = $(wildcard $(SRC_DIR)/*.cpp)
+MAIN_SRCS = main.cpp
 GEN_SRCS  = $(UTIL_DIR)/GenerateInput.cpp
 
 # -----------------------------
 # Object files
 # -----------------------------
-MAIN_OBJS = $(MAIN_SRCS:.cpp=.o)
+MAIN_OBJS = main.o
 GEN_OBJS  = $(GEN_SRCS:.cpp=.o)
 
 # -----------------------------
@@ -95,7 +95,7 @@ gen: $(GEN_OBJS)
 # ============================================================
 
 # Rule for main source files (using MPI compiler)
-$(SRC_DIR)/%.o: $(SRC_DIR)/%.cpp
+%.o: %.cpp
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(OMP_CFLAGS) -c $< -o $@
 
 # Rule for utility source files (using standard g++)
@@ -109,8 +109,7 @@ $(UTIL_DIR)/%.o: $(UTIL_DIR)/%.cpp
 $(DEPEND): $(MAIN_SRCS) $(GEN_SRCS)
 	@$(RM) $(DEPEND)
 	@for file in $(MAIN_SRCS); do \
-	  $(CXX) $(CPPFLAGS) $(CXXFLAGS) -MM $$file | \
-	  sed 's|^|$(SRC_DIR)/|' >> $(DEPEND); \
+	  $(CXX) $(CPPFLAGS) $(CXXFLAGS) -MM $$file >> $(DEPEND); \
 	done
 	@for file in $(GEN_SRCS); do \
 	  $(GXX) $(CPPFLAGS) $(CXXFLAGS) -MM $$file | \
@@ -130,39 +129,38 @@ NP ?= 4
 # 	./$(GEN)
 
 generate: gen
-	cd $(UTIL_DIR) && ../../gen
-	find .. -name gen.txt -ls
+	./gen
 	@if [ -f gen.txt ]; then \
-		echo "Generated gen.txt in project root"; \
+		echo "Generated gen.txt in src folder"; \
 	fi
 
 run-iterative: $(MAIN)
-	./$(MAIN) 1 src/gen.txt
+	./$(MAIN) 1 gen.txt
 
 run-recursive: $(MAIN)
-	./$(MAIN) 2 src/gen.txt
+	./$(MAIN) 2 gen.txt
 
 run-parallel: $(MAIN)
-	mpirun -np $(NP) ./$(MAIN) 3 src/gen.txt
+	mpirun -np $(NP) ./$(MAIN) 3 gen.txt
 
 run-all: $(MAIN)
-	mpirun -np $(NP) ./$(MAIN) 4 src/gen.txt
+	mpirun -np $(NP) ./$(MAIN) 4 gen.txt
 
 # ============================================================
 # Plotting
 # ============================================================
 
 plot:
-	$(PYTHON) $(SRC_DIR)/plot_results.py $(FILE)
+	$(PYTHON) plot_results.py $(FILE)
 
 plot-iterative:
-	$(PYTHON) $(SRC_DIR)/plot_results.py output_Iterative.txt
+	$(PYTHON) plot_results.py output_Iterative.txt
 
 plot-recursive:
-	$(PYTHON) $(SRC_DIR)/plot_results.py output_Recursive.txt
+	$(PYTHON) plot_results.py output_Recursive.txt
 
 plot-parallel:
-	$(PYTHON) $(SRC_DIR)/plot_results.py output_Parallel.txt
+	$(PYTHON) plot_results.py output_Parallel.txt
 
 # ============================================================
 # Cleaning
