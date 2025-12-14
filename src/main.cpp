@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
     // 2 -> Input file name
     std::string methods[4] = {"Iterative", "Recursive", "Parallel", "All"};
     std::string input_file;
-    int method;
+    int method = 0;
     if (argc == 3) {
         method = std::stoi(argv[1]);
         input_file = argv[2];
