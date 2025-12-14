@@ -227,6 +227,50 @@ This generates a plot showing both the forward FFT and inverse FFT results.
 
 ---
 
+## Using Audio Files as Input (converter.py)
+
+Instead of generating synthetic input data with the input generator, you can convert a real audio file into a text format compatible with `main.cpp` using the Python script `src/converter.py`.
+
+### 1. Install Python Dependencies
+
+The converter relies on `librosa` and `numpy`. Install them (preferably in a virtual environment):
+
+```bash
+pip install librosa numpy
+```
+
+### 2. Convert an Audio File to Text
+
+From the project root directory, run:
+
+```bash
+python3 src/converter.py path/to/audio.m4a -o src/gen.txt
+```
+
+Where:
+- `path/to/audio.m4a` is your input audio file (mono will be used)
+- `-o src/gen.txt` saves the extracted samples into `src/gen.txt`, which is the default input file used by `main.cpp`
+
+Optionally, you can limit the duration (in seconds) of the audio segment to convert:
+
+```bash
+python3 src/converter.py path/to/audio.m4a -o src/gen.txt -s 5.0
+```
+
+This will convert only the first 5 seconds of the audio.
+
+### 3. Run the FFT on the Audio Data
+
+Once `src/gen.txt` has been created by `converter.py`, you can run any FFT method exactly as with generated data. For example:
+
+```bash
+make run-iterative
+```
+
+The program will treat the audio samples in `src/gen.txt` as the input signal and compute its frequency-domain representation.
+
+---
+
 ## Method Codes
 
 When running the program manually, use these method codes:

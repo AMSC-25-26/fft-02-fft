@@ -16,20 +16,21 @@ obj/
 *.dylib
 *.dll
 
+# Make dependency files
+*.dep
+make.dep
+
 # Executables
 a.out
 *.exe
 *.out
 *.app
-*.txt
-src/*.txt
 main
 
 # CMake files
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
-Makefile
 INSTALL
 compile_commands.json
 
@@ -61,3 +62,12 @@ __pycache__/
 *Zone.Identifier
 
 .github/
+sound.m4a
+*.png
+
+# Project-generated text outputs
+gen.txt
+src/gen.txt
+output_*.txt
+
+src/utilities/*.exe
