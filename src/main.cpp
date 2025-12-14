@@ -48,14 +48,14 @@ int main(int argc, char* argv[]) {
         method = std::stoi(argv[1]);
         input_file = argv[2];
         if (method < 1 || method > 4){
-            std::cerr << "Method must be between 1 and 4, use all" << std::endl;
+            if (rank == 0) std::cerr << "Method must be between 1 and 4, use all" << std::endl;
             method = 4;
         }
 
-        std::cerr << "Usage: " << methods[method-1] << " on file "<< input_file << std::endl;
+        if (rank == 0) std::cerr << "Usage: " << methods[method-1] << " on file "<< input_file << std::endl;
     } else if (argc == 2){
         std::string input_file = argv[1];
-        std::cerr << "Usage: All method on file " << input_file << std::endl;
+        if (rank == 0) std::cerr << "Usage: All method on file " << input_file << std::endl;
     } else {
         if (rank == 0) std::cerr << "Usage: <method (1-4)> <input_file>" << std::endl; //just one process prints the message
         MPI_Finalize();
@@ -93,7 +93,7 @@ int main(int argc, char* argv[]) {
                 if (runners[i]->read(argv[2])) {
                     // Forward FFT
                     runners[i]->compute();
-                    runners[i]->printStats("FFT");
+                    if (rank == 0) runners[i]->printStats("FFT");
                     std::string out_name = "output_" + names[i] + ".txt";
                     if (rank == 0) runners[i]->write(out_name.c_str());
                     MPI_Barrier(MPI_COMM_WORLD);
@@ -103,7 +103,7 @@ int main(int argc, char* argv[]) {
                 // Inverse FFT
                 // Reload output as input
                 runners[i]->reverseCompute();
-                runners[i]->printStats("IFFT");
+                if (rank == 0) runners[i]->printStats("IFFT");
                 if (rank == 0) runners[i]->writeReal(("output_" + names[i] + "_IFFT.txt").c_str());
             
                 delete runners[i];
@@ -116,7 +116,7 @@ int main(int argc, char* argv[]) {
 
     if(fft->read(argv[2])){
         fft->compute();
-        fft->printStats("FFT");
+        if (rank == 0) fft->printStats("FFT");
         if (rank == 0) fft->write("output.txt");
         MPI_Barrier(MPI_COMM_WORLD);
         // Reload output as input
@@ -125,7 +125,7 @@ int main(int argc, char* argv[]) {
    
     // Perform the inverse FFT (IFFT) for the selected method
     fft->reverseCompute();
-    fft->printStats("IFFT");
+    if (rank == 0) fft->printStats("IFFT");
     if (rank == 0) fft->writeReal("output_IFFT.txt");
     MPI_Finalize();
 }

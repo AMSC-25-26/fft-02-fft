@@ -70,8 +70,10 @@ The FFT program can be executed using predefined Makefile targets, each correspo
 |--------|-------------|
 | `make run-iterative` | Run the iterative FFT |
 | `make run-recursive` | Run the recursive FFT |
-| `make run-parallel` | Run the parallel MPI FFT |
-| `make run-all` | Run all methods sequentially |
+| `make run-parallel` | Run the parallel MPI FFT (4 processes by default) |
+| `make run-parallel NP=8` | Run the parallel MPI FFT with 8 processes |
+| `make run-all` | Run all methods sequentially (4 processes by default) |
+| `make run-all NP=2` | Run all methods with 2 processes |
 
 ### Example Usage
 
@@ -81,7 +83,14 @@ make run-iterative
 
 ### Running with MPI (Multiple Processes)
 
-If you want to run the parallel version with multiple MPI processes, execute manually:
+The `run-parallel` and `run-all` targets automatically use `mpirun` with 4 processes by default. You can customize the number of processes using the `NP` variable:
+
+```bash
+make run-parallel NP=8    # Run with 8 MPI processes
+make run-all NP=2         # Run all methods with 2 MPI processes
+```
+
+Alternatively, you can run manually:
 
 ```bash
 mpirun -np 4 ./main 3 src/gen.txt

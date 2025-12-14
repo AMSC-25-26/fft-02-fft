@@ -2,7 +2,7 @@
 #include <string>
 #include <cstdio>
 #include "exprtk.hpp"
-#define SIZE 1048576 // 2^20
+#define SIZE 33554432 // 2^25
 
 int main() {
     // 1. Variable Declaration

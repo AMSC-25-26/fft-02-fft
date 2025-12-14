@@ -106,6 +106,9 @@ $(DEPEND): $(MAIN_SRCS) $(GEN_SRCS)
 # Run targets
 # ============================================================
 
+# Number of MPI processes (default: 4)
+NP ?= 4
+
 # generate: $(GEN)
 # 	./$(GEN)
 
@@ -123,10 +126,10 @@ run-recursive: $(MAIN)
 	./$(MAIN) 2 src/gen.txt
 
 run-parallel: $(MAIN)
-	./$(MAIN) 3 src/gen.txt
+	mpirun -np $(NP) ./$(MAIN) 3 src/gen.txt
 
 run-all: $(MAIN)
-	./$(MAIN) 4 src/gen.txt
+	mpirun -np $(NP) ./$(MAIN) 4 src/gen.txt
 
 # ============================================================
 # Plotting

@@ -253,7 +253,9 @@ class Parallel : public Fourier<T> {
          * @param label "FFT" or "IFFT"
          */
         void printStats(const std::string& label) override {
-        std::cout << "Parallel " << label << " Duration: " << this->duration << " ms" << std::endl;
+            if (rank == 0) {
+                std::cout << "Parallel " << label << " Duration: " << this->duration << " ms" << std::endl;
+            }
         }
 };
 
