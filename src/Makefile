@@ -70,7 +70,7 @@ GEN_OBJS  = $(GEN_SRCS:.cpp=.o)
 # -----------------------------
 .PHONY:  all clean distclean generate \
         run-iterative run-recursive run-parallel run-all \
-        plot plot-iterative plot-recursive plot-parallel
+	plot plot-iterative plot-recursive plot-parallel convert
 
 # ============================================================
 # Default target
@@ -125,6 +125,12 @@ $(DEPEND): $(MAIN_SRCS) $(GEN_SRCS)
 # Number of MPI processes (default: 4)
 NP ?= 4
 
+# Audio conversion defaults
+AUDIO ?= input.m4a
+OUT_TXT ?= gen.txt
+# Optional seconds of audio to convert (empty means full file)
+SECONDS ?=
+
 # generate: $(GEN)
 # 	./$(GEN)
 
@@ -145,6 +151,13 @@ run-parallel: $(MAIN)
 
 run-all: $(MAIN)
 	mpirun -np $(NP) ./$(MAIN) 4 gen.txt
+
+# ============================================================
+# Audio converter (m4a -> txt)
+# ============================================================
+
+convert:
+	$(PYTHON) converter.py $(AUDIO) -o $(OUT_TXT) $(if $(SECONDS),-s $(SECONDS),)
 
 # ============================================================
 # Plotting

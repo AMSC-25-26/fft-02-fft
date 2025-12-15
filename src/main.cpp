@@ -117,10 +117,17 @@ int main(int argc, char* argv[]) {
     if(fft->read(argv[2])){
         fft->compute();
         if (rank == 0) fft->printStats("FFT");
+
         if (rank == 0) fft->write("output.txt");
-        MPI_Barrier(MPI_COMM_WORLD);
-        // Reload output as input
-        fft->read("output.txt");
+
+        if (method == 3) {
+            // Parallel implementation needs file read on all ranks after gather
+            MPI_Barrier(MPI_COMM_WORLD);
+            fft->read("output.txt");
+        } else {
+            // Iterative/Recursive: keep everything in memory for IFFT
+            fft->reuseOutputAsInput();
+        }
     }
    
     // Perform the inverse FFT (IFFT) for the selected method
