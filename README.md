@@ -259,6 +259,17 @@ python3 src/converter.py path/to/audio.m4a -o src/gen.txt -s 5.0
 
 This will convert only the first 5 seconds of the audio.
 
+### 2.b Convert via Makefile target
+
+You can also run the converter through `make` (defaults: `AUDIO=input.m4a`, `OUT_TXT=gen.txt`, no time limit):
+
+```bash
+cd src
+make convert AUDIO=path/to/audio.m4a OUT_TXT=gen.txt SECONDS=5
+```
+
+This produces `src/gen.txt` ready for `main.cpp`.
+
 ### 3. Run the FFT on the Audio Data
 
 Once `src/gen.txt` has been created by `converter.py`, you can run any FFT method exactly as with generated data. For example:

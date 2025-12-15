@@ -11,6 +11,7 @@
 #include <fstream>
 #include <iomanip>
 #include <memory>
+#include <stdexcept>
 
 using namespace std;
 
@@ -173,6 +174,21 @@ class Fourier {
                 file << value.real() << endl;
             }
             file.close();
+        }
+
+        /**
+         * @brief Copies the current output buffer back into the input buffer.
+         *
+         * Useful to run IFFT right after FFT without writing/reading from disk.
+         *
+         * @throws std::runtime_error If the output data is empty.
+         */
+        void reuseOutputAsInput() {
+            if (output == nullptr) {
+                throw runtime_error("Output data is empty");
+            }
+
+            input = make_unique<vector<T>>(*output);
         }
 };
 

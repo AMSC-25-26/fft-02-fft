@@ -48,7 +48,7 @@ int main() {
     }
 
     // 6. Generation (Generate SIZE values)
-      FILE* output_file = std::fopen("../gen.txt", "w");
+      FILE* output_file = std::fopen("gen.txt", "w");
     for (int i = 0; i < SIZE; ++i) {
         x = domain_start + i * (domain_end - domain_start) / (SIZE - 1);
         double y = expression.value();
@@ -61,6 +61,6 @@ int main() {
     ...
     */
 
-    std::cout << "\nDomain input is valid. Generated samples saved to: ../gen.txt\n"; 
+    std::cout << "\nDomain input is valid. Generated samples saved to: gen.txt\n"; 
     return 0;
 }

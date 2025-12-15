@@ -53,6 +53,7 @@ DerivedData/
 *.tmp
 *.log
 *.bak
+gen
 
 # Python/other scripts cache
 __pycache__/
@@ -69,5 +70,6 @@ sound.m4a
 gen.txt
 src/gen.txt
 output_*.txt
+output.txt
 
 src/utilities/*.exe
